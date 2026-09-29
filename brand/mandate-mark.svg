@@ -1,21 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
   <defs>
-    <linearGradient id="ink" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgb(247, 248, 248)"/><stop offset="100%" stop-color="rgb(200, 204, 214)"/>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="0.35">
+      <stop offset="0%"   stop-color="#ffffff"/>
+      <stop offset="38%"  stop-color="#e9ecff"/>
+      <stop offset="70%"  stop-color="#c3caff"/>
+      <stop offset="100%" stop-color="#a4adff"/>
     </linearGradient>
-    <linearGradient id="acc" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgb(131, 134, 255)"/><stop offset="100%" stop-color="rgb(94, 106, 210)"/>
+    <linearGradient id="shell" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%"   stop-color="#15171d"/>
+      <stop offset="100%" stop-color="#0a0b0e"/>
     </linearGradient>
-    <clipPath id="left"><rect x="0" y="0" width="256.0" height="512"/></clipPath>
-    <clipPath id="right"><rect x="256.0" y="0" width="256.0" height="512"/></clipPath>
+    <radialGradient id="lift" cx="34%" cy="26%" r="72%">
+      <stop offset="0%"   stop-color="#5e6ad2" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#5e6ad2" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <rect width="512" height="512" rx="110.1" fill="rgb(8, 9, 10)"/>
+  <rect width="512" height="512" rx="110.1" fill="url(#shell)"/>
+  <rect width="512" height="512" rx="110.1" fill="url(#lift)"/>
   <rect x="5.1" y="5.1" width="501.8" height="501.8" rx="105.0"
-        stroke="rgb(44, 47, 54)" stroke-width="10.2"/>
-  <g clip-path="url(#left)">
-    <path d="M 158.1 371.2 L 158.1 167.3 L 256.0 302.1 L 353.9 167.3 L 353.9 371.2" stroke="url(#ink)" stroke-width="34.6" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
-  <g clip-path="url(#right)">
-    <path d="M 158.1 371.2 L 158.1 167.3 L 256.0 302.1 L 353.9 167.3 L 353.9 371.2" stroke="url(#acc)" stroke-width="34.6" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
+        stroke="rgba(255,255,255,0.17)" stroke-width="10.2"/>
+  <path d="M 158.1 371.2 L 158.1 167.3 L 256.0 302.1 L 353.9 167.3 L 353.9 371.2" stroke="url(#body)" stroke-width="34.6" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

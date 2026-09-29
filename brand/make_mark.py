@@ -61,26 +61,31 @@ def write_svg(out):
     r = 0.215 * k
     st = 0.020 * k
     lw = W * (1 - 2 * INSET) * k
+    # One continuous gradient across the letterform instead of two hard-clipped
+    # halves. The direction still carries the meaning - ink on the left, accent on
+    # the right - but with no seam, which is what dates a two-tone mark.
     svg = f'''<svg xmlns="http://www.w3.org/2000/svg" width="{k}" height="{k}" viewBox="0 0 {k} {k}" fill="none">
   <defs>
-    <linearGradient id="ink" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgb{INK}"/><stop offset="100%" stop-color="rgb{INK_DEEP}"/>
+    <linearGradient id="body" x1="0" y1="0" x2="1" y2="0.35">
+      <stop offset="0%"   stop-color="#ffffff"/>
+      <stop offset="38%"  stop-color="#e9ecff"/>
+      <stop offset="70%"  stop-color="#c3caff"/>
+      <stop offset="100%" stop-color="#a4adff"/>
     </linearGradient>
-    <linearGradient id="acc" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgb{ACCENT_HI}"/><stop offset="100%" stop-color="rgb{ACCENT}"/>
+    <linearGradient id="shell" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0%"   stop-color="#15171d"/>
+      <stop offset="100%" stop-color="#0a0b0e"/>
     </linearGradient>
-    <clipPath id="left"><rect x="0" y="0" width="{k/2:.1f}" height="{k}"/></clipPath>
-    <clipPath id="right"><rect x="{k/2:.1f}" y="0" width="{k/2:.1f}" height="{k}"/></clipPath>
+    <radialGradient id="lift" cx="34%" cy="26%" r="72%">
+      <stop offset="0%"   stop-color="#5e6ad2" stop-opacity="0.30"/>
+      <stop offset="100%" stop-color="#5e6ad2" stop-opacity="0"/>
+    </radialGradient>
   </defs>
-  <rect width="{k}" height="{k}" rx="{r:.1f}" fill="rgb{BG}"/>
+  <rect width="{k}" height="{k}" rx="{r:.1f}" fill="url(#shell)"/>
+  <rect width="{k}" height="{k}" rx="{r:.1f}" fill="url(#lift)"/>
   <rect x="{st/2:.1f}" y="{st/2:.1f}" width="{k-st:.1f}" height="{k-st:.1f}" rx="{r-st/2:.1f}"
-        stroke="rgb{BORDER}" stroke-width="{st:.1f}"/>
-  <g clip-path="url(#left)">
-    <path d="{d}" stroke="url(#ink)" stroke-width="{lw:.1f}" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
-  <g clip-path="url(#right)">
-    <path d="{d}" stroke="url(#acc)" stroke-width="{lw:.1f}" stroke-linecap="round" stroke-linejoin="round"/>
-  </g>
+        stroke="rgba(255,255,255,0.17)" stroke-width="{st:.1f}"/>
+  <path d="{d}" stroke="url(#body)" stroke-width="{lw:.1f}" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 '''
     open(out, "w", encoding="utf-8").write(svg)
@@ -88,12 +93,35 @@ def write_svg(out):
 
 def render_png(out):
     Wp = S * SS
-    img = Image.new("RGB", (Wp, Wp), BG)
+    img = Image.new("RGB", (Wp, Wp), (10, 11, 14))
     d = ImageDraw.Draw(img, "RGBA")
     st = int(0.020 * Wp)
     rad = int(0.215 * Wp)
+
+    # shell: a subtle diagonal gradient, lighter at the top-left
+    shell = Image.new("RGB", (Wp, Wp), (10, 11, 14))
+    sh = ImageDraw.Draw(shell)
+    for y in range(Wp):
+        for x in range(0, Wp, 8):
+            t = (x / Wp * 0.6 + y / Wp * 0.4)
+            c = (int(21 - 11 * t), int(23 - 12 * t), int(29 - 15 * t))
+            sh.rectangle([x, y, x + 8, y + 1], fill=c)
+    mask = Image.new("L", (Wp, Wp), 0)
+    ImageDraw.Draw(mask).rounded_rectangle([0, 0, Wp, Wp], radius=rad, fill=255)
+    img.paste(shell, (0, 0), mask)
+
+    # lift: a soft indigo glow from the upper-left, so the shell is not flat
+    lift = Image.new("RGB", (Wp, Wp), (0, 0, 0))
+    ld0 = ImageDraw.Draw(lift, "RGBA")
+    for r in range(int(Wp * 0.85), 0, -10):
+        a = int(58 * (1 - r / (Wp * 0.85)) ** 2)
+        ld0.ellipse([Wp * 0.34 - r, Wp * 0.26 - r, Wp * 0.34 + r, Wp * 0.26 + r],
+                    fill=(94, 106, 210, a))
+    img = Image.blend(img, Image.composite(lift, img, mask), 0.55)
+    d = ImageDraw.Draw(img, "RGBA")
+
     d.rounded_rectangle([st // 2, st // 2, Wp - st // 2, Wp - st // 2],
-                        radius=rad - st // 2, outline=BORDER + (255,), width=st)
+                        radius=rad - st // 2, outline=(255, 255, 255, 44), width=st)
 
     pts = _map(path(), Wp)
     lw = int(W * (1 - 2 * INSET) * Wp)
@@ -106,20 +134,24 @@ def render_png(out):
         r = lw / 2
         ld.ellipse([x - r, y - r, x + r, y + r], fill=255)
 
-    mid = Wp // 2
-    for side, (x0, x1, top, bot) in (("L", (0, mid, INK, INK_DEEP)),
-                                     ("R", (mid, Wp, ACCENT_HI, ACCENT))):
-        m = layer.crop((x0, 0, x1, Wp))
-        w = x1 - x0
-        # vertical gradient inside the stroke: lighter at the top, deeper below
-        grad = Image.new("RGB", (w, Wp))
-        gd = ImageDraw.Draw(grad)
-        for y in range(Wp):
-            t = y / Wp
-            gd.line([0, y, w, y], fill=(int(top[0] + (bot[0] - top[0]) * t),
-                                        int(top[1] + (bot[1] - top[1]) * t),
-                                        int(top[2] + (bot[2] - top[2]) * t)))
-        img.paste(grad, (x0, 0), m)
+    # one continuous gradient across the letterform, left to right
+    stops = [(0.00, (255, 255, 255)), (0.38, (233, 236, 255)),
+             (0.70, (195, 202, 255)), (1.00, (164, 173, 255))]
+    body = Image.new("RGB", (Wp, Wp))
+    bd = ImageDraw.Draw(body)
+    for x in range(Wp):
+        t = x / (Wp - 1)
+        for i in range(len(stops) - 1):
+            a, ca = stops[i]
+            b, cb = stops[i + 1]
+            if a <= t <= b:
+                k2 = (t - a) / (b - a) if b > a else 0
+                col = tuple(int(ca[j] + (cb[j] - ca[j]) * k2) for j in range(3))
+                break
+        else:
+            col = stops[-1][1]
+        bd.line([x, 0, x, Wp], fill=col)
+    img.paste(body, (0, 0), layer)
 
     img = img.resize((S, S), Image.LANCZOS)
     img.save(out)
