@@ -13,7 +13,7 @@ Be precise about what exists:
 
 | Part | State |
 |---|---|
-| `AgentMandate.sol` — scoped, capped, expiring, revocable permissions | **built, compiles, 20 checks passing** |
+| `AgentMandate.sol` — scoped, capped, expiring, revocable permissions | **built, compiles, 28 checks passing** |
 | Action record (public event per action) | **built** |
 | Agent registry (on-chain identity) | planned |
 | Staking to register | planned |
@@ -56,7 +56,7 @@ node scripts/mandate-test.mjs
 ```
 
 ```
-20 passed, 0 failed
+28 passed, 0 failed
 ```
 
 The suite covers every way an agent could act outside the box: spending past the cap,

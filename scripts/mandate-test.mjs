@@ -97,16 +97,14 @@ await expectRevert("cannot lower the cap below what is spent", c.extend(id2, 50n
 
 // ---------------------------------------------------------------- expiry
 console.log("\n-- expiry --");
-const soon = Math.floor(Date.now() / 1000) + 3;
+const soon = Math.floor(Date.now() / 1000) + 45;   // must outlive the block that mines the grant
 const id3 = (await (await c.grant(agent.address, ZERO, 100n, soon, SCOPE)).wait())
   .logs.map((l) => { try { return c.interface.parseLog(l); } catch { return null; } }).filter(Boolean).find((l) => l.name === "MandateGranted").args[0];
 check("short-dated mandate starts live", (await c.isLive(id3)) === true);
 try {
-  await conn.network.provider.request({
-    method: "evm_setNextBlockTimestamp",
-    params: [soon + 60],
-  });
-  await conn.network.provider.request({ method: "evm_mine", params: [] });
+  // hardhat v3: the connection exposes no provider; the ethers plugin does
+  await ethers.provider.send("evm_setNextBlockTimestamp", [soon + 120]);
+  await ethers.provider.send("evm_mine", []);
   check("mandate is not live after its expiry", (await c.isLive(id3)) === false);
   await expectRevert("an expired mandate cannot be spent", c.connect(agent).recordAction(id3, 1n, SCOPE, "late"), "MandateExpired");
 } catch (e) {
