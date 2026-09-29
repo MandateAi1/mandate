@@ -6,5 +6,8 @@ types/
 __pycache__/
 *.pyc
 *.log
-dep.json
-live.html
+dep*.json
+gc.json
+gr.json
+gt.json
+live*.html
