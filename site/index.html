@@ -10,17 +10,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,300;6..72,400;6..72,500&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#0c110d;         /* warm dark green-black, not cold black */
-    --panel:#131b15;
-    --line:rgba(203,228,203,.13);
-    --line-soft:rgba(203,228,203,.07);
-    --text:#f0f1e9;       /* warm off-white */
-    --text-2:#c2ccc2;
-    --muted:#9ca69e;
-    --dim:#6d786f;
-    --acid:#d0f99e;       /* allowed */
-    --deny:#ff7a6b;       /* denied */
-    --plan:#e0c5a0;
+    --bg:#0f0e0c;         /* warm dark green-black, not cold black */
+    --panel:#171512;
+    --line:rgba(240,220,180,.13);
+    --line-soft:rgba(240,220,180,.07);
+    --text:#f5f2ea;       /* warm off-white */
+    --text-2:#cec7b8;
+    --muted:#a49d8f;
+    --dim:#756e61;
+    --accent:#e8b458;       /* allowed */
+    --deny:#e8735c;       /* denied */
+    --plan:#93a9bf;
     --r-md:.75rem; --r-lg:1rem; --r-xl:1.5rem;
     --max:1140px;
   }
@@ -45,21 +45,21 @@
        padding:9px 16px;border-radius:var(--r-md);text-decoration:none;
        border:1px solid var(--line);color:var(--text-2);background:transparent;transition:.15s}
   .btn:hover{border-color:rgba(203,228,203,.3);color:var(--text)}
-  .btn.acid{background:var(--acid);color:#0e1a08;border-color:transparent;font-weight:700}
-  .btn.acid:hover{background:#e2ffbe}
+  .btn.solid{background:var(--accent);color:#1a1206;border-color:transparent;font-weight:700}
+  .btn.solid:hover{background:#f3c979}
 
   /* ---------- hero ---------- */
   .hero{padding:104px 0 78px;position:relative;overflow:hidden}
   .hero::before{content:"";position:absolute;left:50%;top:-170px;width:920px;height:540px;
     transform:translateX(-50%);pointer-events:none;
-    background:radial-gradient(ellipse at center,rgba(208,249,158,.10),transparent 70%)}
+    background:radial-gradient(ellipse at center,rgba(232,180,88,.10),transparent 70%)}
   .pill{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:500;
         color:var(--muted);border:1px solid var(--line);border-radius:999px;
         padding:5px 12px;margin-bottom:26px}
-  .pill i{width:6px;height:6px;border-radius:50%;background:var(--acid);display:block}
+  .pill i{width:6px;height:6px;border-radius:50%;background:var(--accent);display:block}
   h1{font-family:'Newsreader',Georgia,serif;font-weight:300;font-size:74px;line-height:1.02;
      letter-spacing:-1.6px;max-width:900px}
-  h1 em{font-style:italic;color:var(--acid)}
+  h1 em{font-style:italic;color:var(--accent)}
   .sub{margin-top:24px;font-size:18.5px;line-height:1.65;color:var(--muted);max-width:620px}
   .cta{margin-top:34px;display:flex;gap:11px;flex-wrap:wrap}
 
@@ -75,14 +75,14 @@
   .flow{margin-top:44px;display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:stretch}
   @media(max-width:1000px){.flow{grid-template-columns:1fr;gap:10px}}
   .stage{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);padding:20px}
-  .stage .n{font-family:'Geist Mono',monospace;font-size:11px;color:var(--acid);
+  .stage .n{font-family:'Geist Mono',monospace;font-size:11px;color:var(--accent);
             letter-spacing:.5px;margin-bottom:12px;display:block}
   .stage h3{font-size:15px;font-weight:700;letter-spacing:-.2px;margin-bottom:7px}
   .stage p{font-size:13.5px;line-height:1.55;color:var(--muted)}
   .arrow{display:flex;align-items:center;justify-content:center;padding:0 12px;color:var(--dim)}
   @media(max-width:1000px){.arrow{padding:4px 0;transform:rotate(90deg)}}
-  .allowed{border-color:rgba(208,249,158,.32)}
-  .allowed h3{color:var(--acid)}
+  .allowed{border-color:rgba(232,180,88,.32)}
+  .allowed h3{color:var(--accent)}
 
   /* ---------- cards ---------- */
   .grid{display:grid;gap:14px;margin-top:38px}
@@ -91,17 +91,17 @@
   .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px}
   .card h3{font-size:16px;font-weight:700;letter-spacing:-.2px;margin-bottom:8px}
   .card p{font-size:14.5px;line-height:1.6;color:var(--muted)}
-  .card .n{font-family:'Geist Mono',monospace;font-size:11px;color:var(--acid);
+  .card .n{font-family:'Geist Mono',monospace;font-size:11px;color:var(--accent);
            display:block;margin-bottom:13px}
 
   /* ---------- code ---------- */
-  .code{margin-top:32px;background:#0a0f0b;border:1px solid var(--line);
+  .code{margin-top:32px;background:#0b0a08;border:1px solid var(--line);
         border-radius:var(--r-lg);overflow:hidden}
   .code .bar{display:flex;align-items:center;padding:11px 16px;border-bottom:1px solid var(--line-soft)}
   .code .bar b{font-size:12.5px;font-weight:500;color:var(--muted)}
   .code pre{padding:20px;overflow-x:auto;font-family:'Geist Mono',monospace;
             font-size:12.5px;line-height:1.8;color:var(--text-2)}
-  .k{color:var(--acid)}.f{color:var(--text)}.t{color:var(--muted)}.s{color:var(--acid)}.c{color:var(--dim)}
+  .k{color:var(--accent)}.f{color:var(--text)}.t{color:var(--muted)}.s{color:var(--accent)}.c{color:var(--dim)}
 
   /* ---------- status rows ---------- */
   .rows{margin-top:34px;border:1px solid var(--line);border-radius:var(--r-lg);
@@ -114,17 +114,17 @@
   .row dd{font-size:14.5px;color:var(--text-2)}
   .tag{display:inline-block;font-size:11px;font-weight:500;padding:2px 9px;border-radius:999px;
        border:1px solid var(--line);color:var(--muted);margin-left:8px}
-  .tag.live{color:var(--acid);border-color:rgba(208,249,158,.38)}
+  .tag.live{color:var(--accent);border-color:rgba(232,180,88,.38)}
   .tag.plan{color:var(--plan);border-color:rgba(224,197,160,.32)}
 
-  .note{margin-top:24px;border-left:2px solid var(--acid);padding:2px 0 2px 18px;
+  .note{margin-top:24px;border-left:2px solid var(--accent);padding:2px 0 2px 18px;
         font-size:14.5px;line-height:1.65;color:var(--muted);max-width:660px}
 
   footer{border-top:1px solid var(--line-soft);padding:40px 0 60px}
   .foot{display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap;align-items:center}
   .foot p{font-size:13px;color:var(--dim)}
   .foot a{color:var(--muted);text-decoration:none;font-size:13px}
-  .foot a:hover{color:var(--acid)}
+  .foot a:hover{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -133,14 +133,14 @@
   <div class="wrap nav">
     <a class="brand" href="#top" aria-label="Mandate">
       <svg width="28" height="28" viewBox="0 0 512 512" fill="none" aria-hidden="true">
-        <rect width="512" height="512" rx="112" fill="#0c110d"/>
-        <rect x="5" y="5" width="502" height="502" rx="107" stroke="#26332a" stroke-width="10"/>
+        <rect width="512" height="512" rx="112" fill="#0f0e0c"/>
+        <rect x="5" y="5" width="502" height="502" rx="107" stroke="#33291d" stroke-width="10"/>
         <defs>
           <clipPath id="nl"><rect x="0" y="0" width="256" height="512"/></clipPath>
           <clipPath id="nr"><rect x="256" y="0" width="256" height="512"/></clipPath>
         </defs>
-        <g clip-path="url(#nl)"><path d="M 179.4 371.2 L 179.4 196.1 L 256 296.3 L 332.6 196.1 L 332.6 371.2" stroke="#f0f1e9" stroke-width="61.4" stroke-linecap="round" stroke-linejoin="round"/></g>
-        <g clip-path="url(#nr)"><path d="M 179.4 371.2 L 179.4 196.1 L 256 296.3 L 332.6 196.1 L 332.6 371.2" stroke="#d0f99e" stroke-width="61.4" stroke-linecap="round" stroke-linejoin="round"/></g>
+        <g clip-path="url(#nl)"><path d="M 179.4 371.2 L 179.4 196.1 L 256 296.3 L 332.6 196.1 L 332.6 371.2" stroke="#f5f2ea" stroke-width="61.4" stroke-linecap="round" stroke-linejoin="round"/></g>
+        <g clip-path="url(#nr)"><path d="M 179.4 371.2 L 179.4 196.1 L 256 296.3 L 332.6 196.1 L 332.6 371.2" stroke="#e8b458" stroke-width="61.4" stroke-linecap="round" stroke-linejoin="round"/></g>
       </svg>
       <span>Mandate</span>
     </a>
@@ -150,7 +150,7 @@
     <a class="link" href="#token">Token</a>
     <span class="spacer"></span>
     <a class="btn" href="https://github.com/MandateAi1/mandate" target="_blank" rel="noopener">GitHub</a>
-    <a class="btn acid" href="#start">Get started</a>
+    <a class="btn solid" href="#start">Get started</a>
   </div>
 </header>
 
@@ -166,7 +166,7 @@
         expiring and revocable, with every action recorded on-chain.
       </p>
       <div class="cta">
-        <a class="btn acid" href="#contract">Read the contract</a>
+        <a class="btn solid" href="#contract">Read the contract</a>
         <a class="btn" href="https://github.com/MandateAi1/mandate" target="_blank" rel="noopener">View on GitHub</a>
       </div>
     </div>
