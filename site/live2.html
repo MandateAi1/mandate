@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mandate — permission slips for AI agents</title>
+<meta name="description" content="Scoped, capped, expiring, revocable authority for AI agents. Every action recorded on-chain.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#08090a; --panel:#0f1011; --raised:#191a1b;
+    --ink:#f7f8f8; --ink-2:#d0d6e0; --ink-3:#8a8f98; --ink-4:#62666d;
+    --accent:#5e6ad2; --accent-hi:#7170ff; --accent-lo:#828fff;
+    --line:rgba(255,255,255,.08); --line-soft:rgba(255,255,255,.05);
+    --ok:#27a644;
+    --max:1120px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    font-feature-settings:'cv01','ss03';
+    -webkit-font-smoothing:antialiased;
+    line-height:1.5;
+  }
+  .mono{font-family:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-feature-settings:normal}
+  .wrap{max-width:var(--max);margin:0 auto;padding:0 28px}
+
+  /* ---------- nav ---------- */
+  header{
+    position:sticky;top:0;z-index:20;
+    background:rgba(8,9,10,.82);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .nav{display:flex;align-items:center;gap:30px;height:62px}
+  .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--ink)}
+  .brand svg{display:block}
+  .brand span{font-size:15.5px;font-weight:590;letter-spacing:-.2px}
+  .nav a.link{
+    color:var(--ink-2);text-decoration:none;font-size:13.5px;font-weight:510;
+    letter-spacing:-.13px;transition:color .15s;
+  }
+  .nav a.link:hover{color:var(--ink)}
+  .nav .spacer{flex:1}
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:13.5px;font-weight:510;letter-spacing:-.13px;
+    padding:8px 15px;border-radius:6px;text-decoration:none;
+    border:1px solid var(--line);background:rgba(255,255,255,.02);color:var(--ink-2);
+    transition:background .15s,color .15s,border-color .15s;
+  }
+  .btn:hover{background:rgba(255,255,255,.05);color:var(--ink)}
+  .btn.primary{background:var(--accent);border-color:transparent;color:#fff}
+  .btn.primary:hover{background:var(--accent-lo)}
+
+  /* ---------- hero ---------- */
+  .hero{padding:112px 0 92px;position:relative;overflow:hidden}
+  .hero::before{
+    content:"";position:absolute;inset:-40% 30% auto 30%;height:520px;
+    background:radial-gradient(ellipse at center,rgba(94,106,210,.20),transparent 68%);
+    filter:blur(30px);pointer-events:none;
+  }
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:12px;font-weight:510;letter-spacing:-.13px;color:var(--ink-3);
+    border:1px solid var(--line);border-radius:9999px;padding:4px 11px;margin-bottom:26px;
+  }
+  .dot{width:5px;height:5px;border-radius:50%;background:var(--ok)}
+  h1{
+    font-size:64px;font-weight:510;line-height:1.0;letter-spacing:-1.408px;
+    max-width:820px;
+  }
+  h1 em{font-style:normal;color:var(--accent-hi)}
+  .sub{
+    margin-top:26px;font-size:19px;font-weight:400;line-height:1.6;
+    letter-spacing:-.17px;color:var(--ink-3);max-width:610px;
+  }
+  .cta{margin-top:38px;display:flex;gap:12px;flex-wrap:wrap}
+
+  /* ---------- sections ---------- */
+  section{padding:88px 0;border-top:1px solid var(--line-soft)}
+  .kicker{
+    font-size:12px;font-weight:510;letter-spacing:1.4px;text-transform:uppercase;
+    color:var(--ink-4);margin-bottom:20px;
+  }
+  h2{font-size:32px;font-weight:400;line-height:1.13;letter-spacing:-.704px;max-width:640px}
+  .lede{margin-top:16px;font-size:17px;line-height:1.6;color:var(--ink-3);max-width:620px;letter-spacing:-.165px}
+
+  .grid{display:grid;gap:14px;margin-top:40px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:900px){.g3,.g2{grid-template-columns:1fr}}
+  .card{
+    background:rgba(255,255,255,.02);border:1px solid var(--line);
+    border-radius:8px;padding:24px;
+  }
+  .card h3{font-size:16px;font-weight:590;letter-spacing:-.24px;margin-bottom:9px}
+  .card p{font-size:14.5px;line-height:1.6;color:var(--ink-3);letter-spacing:-.13px}
+  .num{
+    font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent-hi);
+    margin-bottom:14px;letter-spacing:0;
+  }
+
+  /* ---------- code block ---------- */
+  .code{
+    margin-top:34px;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;overflow:hidden;
+  }
+  .code .bar{
+    display:flex;align-items:center;gap:8px;padding:11px 16px;
+    border-bottom:1px solid var(--line-soft);
+  }
+  .code .bar b{font-size:12.5px;font-weight:510;color:var(--ink-3);letter-spacing:-.13px}
+  .code pre{
+    padding:20px;overflow-x:auto;font-family:'JetBrains Mono',monospace;
+    font-size:12.5px;line-height:1.75;color:var(--ink-2);
+  }
+  .c-k{color:#7170ff}.c-f{color:#f7f8f8}.c-t{color:#8a8f98}.c-s{color:#27a644}.c-n{color:#d0d6e0}
+
+  /* ---------- status rows ---------- */
+  .rows{margin-top:36px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .row{
+    display:grid;grid-template-columns:210px 1fr;gap:18px;
+    padding:17px 22px;border-bottom:1px solid var(--line-soft);
+    align-items:baseline;
+  }
+  .row:last-child{border-bottom:0}
+  @media(max-width:700px){.row{grid-template-columns:1fr;gap:6px}}
+  .row dt{font-size:13px;font-weight:510;color:var(--ink-4);letter-spacing:-.13px}
+  .row dd{font-size:14.5px;color:var(--ink-2);letter-spacing:-.13px}
+  .tag{
+    display:inline-block;font-size:11px;font-weight:510;padding:2px 8px;
+    border-radius:9999px;border:1px solid var(--line);color:var(--ink-3);
+    margin-left:8px;vertical-align:1px;
+  }
+  .tag.live{color:var(--ok);border-color:rgba(39,166,68,.35)}
+  .tag.plan{color:#d9a13b;border-color:rgba(217,161,59,.3)}
+
+  /* ---------- token ---------- */
+  .note{
+    margin-top:26px;border-left:2px solid var(--accent);padding:2px 0 2px 18px;
+    font-size:14.5px;line-height:1.65;color:var(--ink-3);max-width:640px;letter-spacing:-.13px;
+  }
+
+  footer{border-top:1px solid var(--line-soft);padding:44px 0 64px}
+  .foot{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:center}
+  .foot p{font-size:13px;color:var(--ink-4);letter-spacing:-.13px}
+  .foot a{color:var(--ink-3);text-decoration:none;font-size:13px}
+  .foot a:hover{color:var(--ink)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="Mandate">
+      <svg width="26" height="26" viewBox="0 0 512 512" fill="none" aria-hidden="true"><rect width="512" height="512" rx="110" fill="#08090a"/><rect x="5" y="5" width="502" height="502" rx="105" stroke="#2c2f36" stroke-width="10"/><defs><clipPath id="nl"><rect x="0" y="0" width="256" height="512"/></clipPath><clipPath id="nr"><rect x="256" y="0" width="256" height="512"/></clipPath></defs><g clip-path="url(#nl)"><path d="M 158.1 371.2 L 158.1 167.3 L 256.0 302.1 L 353.9 167.3 L 353.9 371.2" stroke="#f7f8f8" stroke-width="34.6" stroke-linecap="round" stroke-linejoin="round"/></g><g clip-path="url(#nr)"><path d="M 158.1 371.2 L 158.1 167.3 L 256.0 302.1 L 353.9 167.3 L 353.9 371.2" stroke="#5e6ad2" stroke-width="34.6" stroke-linecap="round" stroke-linejoin="round"/></g></svg>
+      <span>Mandate</span>
+    </a>
+    <a class="link" href="#problem">Problem</a>
+    <a class="link" href="#how">How it works</a>
+    <a class="link" href="#contract">Contract</a>
+    <a class="link" href="#token">Token</a>
+    <span class="spacer"></span>
+    <a class="btn primary" href="#start">Get started</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <div class="hero">
+    <div class="wrap">
+      <div class="eyebrow"><span class="dot"></span> Contract deployed · tests passing</div>
+      <h1>Your agent gets a <em>permission slip</em>, not your keys.</h1>
+      <p class="sub">
+        Today an AI agent either holds your credentials — full, permanent power — or it
+        can't act at all. Mandate is the middle: authority that is scoped, capped,
+        expiring and revocable, with every action recorded on-chain.
+      </p>
+      <div class="cta">
+        <a class="btn primary" href="#contract">Read the contract</a>
+        <a class="btn" href="#how">How it works</a>
+      </div>
+    </div>
+  </div>
+
+  <section id="problem">
+    <div class="wrap">
+      <p class="kicker">The problem</p>
+      <h2>Agents act. Nobody can say what they were allowed to do.</h2>
+      <p class="lede">
+        The failure mode is not a rogue intelligence. It's that there was never a limit
+        to exceed, and no record to check afterwards.
+      </p>
+      <div class="grid g3">
+        <div class="card">
+          <div class="num mono">01</div>
+          <h3>All or nothing</h3>
+          <p>You hand over a key and hope, or you don't delegate at all. There is no
+             way to grant one narrow power and keep the rest.</p>
+        </div>
+        <div class="card">
+          <div class="num mono">02</div>
+          <h3>No record</h3>
+          <p>When something goes wrong, the only account of what happened is the
+             agent's own logs — written by the party you're investigating.</p>
+        </div>
+        <div class="card">
+          <div class="num mono">03</div>
+          <h3>Revocation is manual</h3>
+          <p>Rotating a key to stop one agent breaks every other integration using it.
+             There's no way to withdraw a single permission instantly.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <p class="kicker">How it works</p>
+      <h2>A mandate is a signed, bounded grant of authority.</h2>
+      <p class="lede">
+        The principal grants it. The agent acts inside it. The chain records both.
+      </p>
+      <div class="grid g3">
+        <div class="card">
+          <div class="num mono">01 — GRANT</div>
+          <h3>Set the box</h3>
+          <p>An asset, a spending cap, an expiry and an action scope. The principal is
+             the only address that can change or revoke it.</p>
+        </div>
+        <div class="card">
+          <div class="num mono">02 — ACT</div>
+          <h3>Stay inside it</h3>
+          <p>The agent records each action against the mandate. Outside the cap, past
+             the expiry, or after revocation, the call reverts.</p>
+        </div>
+        <div class="card">
+          <div class="num mono">03 — REVOKE</div>
+          <h3>End it instantly</h3>
+          <p>One transaction from the principal. Revocation is final by design — a
+             leash you can quietly re-attach is not a leash.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contract">
+    <div class="wrap">
+      <p class="kicker">The contract</p>
+      <h2>Four writes. That's the whole surface.</h2>
+      <p class="lede">
+        Solidity 0.8.24, no dependencies, no upgradeability. It holds no funds in this
+        version — it is a ledger of authority, so there is nothing to drain.
+      </p>
+
+      <div class="code">
+        <div class="bar"><b>AgentMandate.sol</b></div>
+        <pre><span class="c-k">function</span> <span class="c-f">grant</span>(
+    <span class="c-t">address</span> agent, <span class="c-t">address</span> asset,
+    <span class="c-t">uint96</span>  cap,   <span class="c-t">uint64</span>  expiry, <span class="c-t">bytes32</span> scope
+) <span class="c-k">external returns</span> (<span class="c-t">uint256</span> mandateId)
+
+<span class="c-k">function</span> <span class="c-f">recordAction</span>(
+    <span class="c-t">uint256</span> mandateId, <span class="c-t">uint96</span> amount,
+    <span class="c-t">bytes32</span> actionHash, <span class="c-t">string</span> memo
+) <span class="c-k">external</span>                       <span class="c-s">// reverts outside the box</span>
+
+<span class="c-k">function</span> <span class="c-f">revoke</span>(<span class="c-t">uint256</span> mandateId) <span class="c-k">external</span>   <span class="c-s">// principal only, final</span>
+<span class="c-k">function</span> <span class="c-f">extend</span>(<span class="c-t">uint256</span> mandateId, <span class="c-t">uint96</span> cap, <span class="c-t">uint64</span> expiry) <span class="c-k">external</span></pre>
+      </div>
+
+      <div class="rows">
+        <div class="row"><dt>Every refusal is explicit</dt><dd class="mono">NotAgent · MandateRevoked · MandateExpired · CapExceeded(requested, remaining)</dd></div>
+        <div class="row"><dt>The record</dt><dd><span class="mono">ActionRecorded(mandateId, agent, amount, spentAfter, actionHash, memo)</span> — a public event per action</dd></div>
+        <div class="row"><dt>Remaining allowance</dt><dd><span class="mono">remaining()</span> returns <span class="mono">0</span> for revoked or expired mandates, so a dead mandate can't be mistaken for a live one</dd></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="token">
+    <div class="wrap">
+      <p class="kicker">The token</p>
+      <h2>What the token does, and what it doesn't yet.</h2>
+      <p class="lede">
+        The token is not how you pay for this. It is what an agent puts at risk to be
+        allowed to act at all.
+      </p>
+      <div class="rows">
+        <div class="row"><dt>Permission ledger</dt><dd>Scoped, capped, expiring, revocable mandates<span class="tag live">built</span></dd></div>
+        <div class="row"><dt>Agent registry</dt><dd>On-chain identity per agent<span class="tag plan">planned</span></dd></div>
+        <div class="row"><dt>Stake to register</dt><dd>Agents stake to be listed as acting agents<span class="tag plan">planned</span></dd></div>
+        <div class="row"><dt>Slashing</dt><dd>Acting outside a mandate forfeits stake — the penalty ETH cannot provide, because you cannot seize ETH the protocol does not hold<span class="tag plan">planned</span></dd></div>
+      </div>
+      <p class="note">
+        Being precise: only the first row exists today. The contract is written, compiles
+        and passes its tests; the registry, staking and slashing are not built. The token
+        is not live. This page will say so until that changes.
+      </p>
+    </div>
+  </section>
+
+  <section id="start">
+    <div class="wrap">
+      <p class="kicker">Get started</p>
+      <h2>Run the tests before you trust it with anything.</h2>
+      <p class="lede">
+        The contract is a single file with no dependencies. Clone it, compile it, read
+        the twenty checks that cover every way an agent could act outside the box.
+      </p>
+      <div class="code">
+        <div class="bar"><b>terminal</b></div>
+        <pre><span class="c-t">$</span> <span class="c-f">npm install</span>
+<span class="c-t">$</span> <span class="c-f">npx hardhat compile</span>
+<span class="c-t">$</span> <span class="c-f">node scripts/mandate-test.mjs</span>
+
+<span class="c-s">20 passed, 0 failed</span></pre>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <p>Mandate — permission slips for AI agents. Not affiliated with any agent vendor.</p>
+    <p><a href="https://github.com/">GitHub</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

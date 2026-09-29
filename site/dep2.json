@@ -1,0 +1,53 @@
+Vercel CLI 61.0.0 (Node.js 22.23.2)
+Deploying site
+Uploading [--------------------] (0.0B/17.2KB)
+Uploading [=================---] (15.4KB/17.2KB)
+Uploading [====================] (17.2KB/17.2KB)
+  Inspect         https://vercel.com/yo-5946/site/FJy9ZSNhAhWrPgiTEwnfH8yWfN1Y
+  Production      https://site-6n3c87ddu-yo-5946.vercel.app
+Building…
+Building…
+Running build in Washington, D.C., USA (East) – iad1
+Build machine configuration: 2 cores, 8 GB
+Retrieving list of deployment files...
+Previous build caches not available.
+[2K[1A[2K[G  Production      https://site-6n3c87ddu-yo-5946.vercel.app
+Completing…
+▲ Aliased         https://site-psi-ochre-80.vercel.app
+{
+  "status": "ok",
+  "deployment": {
+    "id": "dpl_FJy9ZSNhAhWrPgiTEwnfH8yWfN1Y",
+    "url": "https://site-6n3c87ddu-yo-5946.vercel.app",
+    "productionUrl": "https://site-psi-ochre-80.vercel.app",
+    "inspectorUrl": "https://vercel.com/yo-5946/site/FJy9ZSNhAhWrPgiTEwnfH8yWfN1Y",
+    "readyState": "READY",
+    "target": "production",
+    "deploymentApiUrl": "https://api.vercel.com/v13/deployments/dpl_FJy9ZSNhAhWrPgiTEwnfH8yWfN1Y",
+    "buildMachine": {
+      "cores": 2,
+      "memory": 8192,
+      "machine": "basic",
+      "selectionType": "fixed",
+      "selectionSource": "plan-default"
+    },
+    "deploymentProtection": [
+      "vercel_authentication"
+    ]
+  },
+  "message": "Deployment site-6n3c87ddu-yo-5946.vercel.app ready. Production URL: https://site-psi-ochre-80.vercel.app",
+  "next": [
+    {
+      "command": "vercel curl https://site-psi-ochre-80.vercel.app",
+      "when": "Verify deployment, including when Deployment Protection is enabled"
+    },
+    {
+      "command": "vercel inspect site-6n3c87ddu-yo-5946.vercel.app",
+      "when": "Inspect deployment"
+    },
+    {
+      "command": "vercel deploy --prod",
+      "when": "Promote to production"
+    }
+  ]
+}
