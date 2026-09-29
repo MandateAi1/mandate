@@ -31,22 +31,29 @@ ACCENT = (94, 106, 210)
 ACCENT_HI = (131, 134, 255)
 
 # --- geometry (unit space) ---------------------------------------------------
-W = 0.150          # stroke width, used everywhere
+W = 0.115          # stroke width, used everywhere
 INSET = 0.275      # the letterform's share of the container
-CV = 0.700         # how deep the centre vertex dips
-SHOULDER = 0.115   # how far below the cap the shoulders turn
+X_L, X_R = 0.10, 0.90      # the two stem centres
+TOP, BOT = 0.06, 0.94      # how far the stems run
+REACH = 0.36       # how far each diagonal travels toward the centre
 
 
-def path():
-    """One polyline traced left to right. Endpoints are the two stem bases."""
-    x0, x1 = W / 2, 1 - W / 2
-    return [
-        (x0, 1.00),      # left stem base   (round cap)
-        (x0, SHOULDER),  # left shoulder    (round join)
-        (0.5, CV),       # centre vertex    (round join)
-        (x1, SHOULDER),  # right shoulder   (round join)
-        (x1, 1.00),      # right stem base  (round cap)
-    ]
+def paths():
+    """Two disconnected halves with a gap between them.
+
+    Each half is one polyline: a full-height stem that turns into a diagonal.
+    The LEFT diagonal leaves the stem's top and travels down-right; the RIGHT
+    diagonal leaves the centre and travels down-right into the stem's bottom.
+
+    The result is point-symmetric: rotating the mark 180 degrees about its centre
+    maps each half exactly onto the other. That is what makes it read as an M
+    while being a single repeated gesture rather than two mirrored letters.
+
+    The gap is deliberate - the halves never touch.
+    """
+    left = [(X_L, BOT), (X_L, TOP), (X_L + REACH, TOP + REACH)]
+    right = [(X_R, TOP), (X_R, BOT), (X_R - REACH, BOT - REACH)]
+    return [left, right]
 
 
 def _map(pts, k, inset=INSET):
@@ -56,8 +63,10 @@ def _map(pts, k, inset=INSET):
 
 def write_svg(out):
     k = 512
-    pts = _map(path(), k)
-    d = "M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts)
+    ds = []
+    for pl in paths():
+        pts = _map(pl, k)
+        ds.append("M " + " L ".join(f"{x:.1f} {y:.1f}" for x, y in pts))
     r = 0.215 * k
     st = 0.020 * k
     lw = W * (1 - 2 * INSET) * k
@@ -85,7 +94,8 @@ def write_svg(out):
   <rect width="{k}" height="{k}" rx="{r:.1f}" fill="url(#lift)"/>
   <rect x="{st/2:.1f}" y="{st/2:.1f}" width="{k-st:.1f}" height="{k-st:.1f}" rx="{r-st/2:.1f}"
         stroke="rgba(255,255,255,0.17)" stroke-width="{st:.1f}"/>
-  <path d="{d}" stroke="url(#body)" stroke-width="{lw:.1f}" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="{ds[0]}" stroke="url(#body)" stroke-width="{lw:.1f}" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="{ds[1]}" stroke="url(#body)" stroke-width="{lw:.1f}" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
 '''
     open(out, "w", encoding="utf-8").write(svg)
@@ -123,16 +133,17 @@ def render_png(out):
     d.rounded_rectangle([st // 2, st // 2, Wp - st // 2, Wp - st // 2],
                         radius=rad - st // 2, outline=(255, 255, 255, 44), width=st)
 
-    pts = _map(path(), Wp)
     lw = int(W * (1 - 2 * INSET) * Wp)
 
-    # the stroke goes on its own layer, so the colour split stays clean
+    # each half goes on its own layer; round caps on all four terminals
     layer = Image.new("L", (Wp, Wp), 0)
     ld = ImageDraw.Draw(layer)
-    ld.line(pts, fill=255, width=lw, joint="curve")      # rounds every corner
-    for (x, y) in (pts[0], pts[-1]):                     # round the two terminals
-        r = lw / 2
-        ld.ellipse([x - r, y - r, x + r, y + r], fill=255)
+    for pl in paths():
+        pts = _map(pl, Wp)
+        ld.line(pts, fill=255, width=lw, joint="curve")
+        for (x, y) in (pts[0], pts[-1]):
+            r = lw / 2
+            ld.ellipse([x - r, y - r, x + r, y + r], fill=255)
 
     # one continuous gradient across the letterform, left to right
     stops = [(0.00, (255, 255, 255)), (0.38, (233, 236, 255)),

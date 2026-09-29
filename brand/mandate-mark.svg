@@ -19,5 +19,6 @@
   <rect width="512" height="512" rx="110.1" fill="url(#lift)"/>
   <rect x="5.1" y="5.1" width="501.8" height="501.8" rx="105.0"
         stroke="rgba(255,255,255,0.17)" stroke-width="10.2"/>
-  <path d="M 158.1 371.2 L 158.1 167.3 L 256.0 302.1 L 353.9 167.3 L 353.9 371.2" stroke="url(#body)" stroke-width="34.6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 163.8 357.4 L 163.8 154.6 L 246.8 237.6" stroke="url(#body)" stroke-width="26.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M 348.2 154.6 L 348.2 357.4 L 265.2 274.4" stroke="url(#body)" stroke-width="26.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
