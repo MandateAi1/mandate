@@ -1,29 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
   <defs>
-    <clipPath id="letter"><rect x="140.8" y="140.8" width="230.4" height="230.4"/></clipPath>
-    <clipPath id="left"><rect x="0" y="0" width="256.0" height="512"/></clipPath>
-    <clipPath id="right"><rect x="256.0" y="0" width="256.0" height="512"/></clipPath>
     <linearGradient id="ink" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="rgb(247, 248, 248)"/><stop offset="100%" stop-color="rgb(198, 202, 212)"/>
+      <stop offset="0%" stop-color="rgb(247, 248, 248)"/><stop offset="100%" stop-color="rgb(200, 204, 214)"/>
     </linearGradient>
     <linearGradient id="acc" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0%" stop-color="rgb(131, 134, 255)"/><stop offset="100%" stop-color="rgb(94, 106, 210)"/>
     </linearGradient>
-    <mask id="clipL"><rect x="0" y="0" width="256.0" height="512" fill="#fff"/></mask>
+    <clipPath id="left"><rect x="0" y="0" width="256.0" height="512"/></clipPath>
+    <clipPath id="right"><rect x="256.0" y="0" width="256.0" height="512"/></clipPath>
   </defs>
   <rect width="512" height="512" rx="110.1" fill="rgb(8, 9, 10)"/>
   <rect x="5.1" y="5.1" width="501.8" height="501.8" rx="105.0"
         stroke="rgb(44, 47, 54)" stroke-width="10.2"/>
-  <g clip-path="url(#letter)">
-    <g clip-path="url(#left)"><g fill="url(#ink)">  <polygon points="140.80,140.80 179.97,140.80 179.97,371.20 140.80,371.20"/>
-  <polygon points="332.03,140.80 371.20,140.80 371.20,371.20 332.03,371.20"/>
-  <polygon points="179.97,140.80 256.00,288.26 256.00,202.79 224.04,140.80"/>
-  <polygon points="332.03,140.80 256.00,288.26 256.00,202.79 287.96,140.80"/>
-</g></g>
-    <g clip-path="url(#right)"><g fill="url(#acc)">  <polygon points="140.80,140.80 179.97,140.80 179.97,371.20 140.80,371.20"/>
-  <polygon points="332.03,140.80 371.20,140.80 371.20,371.20 332.03,371.20"/>
-  <polygon points="179.97,140.80 256.00,288.26 256.00,202.79 224.04,140.80"/>
-  <polygon points="332.03,140.80 256.00,288.26 256.00,202.79 287.96,140.80"/>
-</g></g>
+  <g clip-path="url(#left)">
+    <path d="M 158.1 371.2 L 158.1 167.3 L 256.0 302.1 L 353.9 167.3 L 353.9 371.2" stroke="url(#ink)" stroke-width="34.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <g clip-path="url(#right)">
+    <path d="M 158.1 371.2 L 158.1 167.3 L 256.0 302.1 L 353.9 167.3 L 353.9 371.2" stroke="url(#acc)" stroke-width="34.6" stroke-linecap="round" stroke-linejoin="round"/>
   </g>
 </svg>
